@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fake-api
+  labels:
+    app: fake-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+        app: fake-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: fake-api
+    spec:
+      containers:
+      - name: fake-api
+        image: docker.io/johnwesonga/fake-api:0.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+        resources:
+          limits:
+            cpu: 10m
+            memory: 30Mi
+          requests:
+            cpu: 10m
+            memory: 30Mi
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/rewrite-target: /
+  labels:
+    app: fake-api
+  name: fake-api
+spec:
+  backend:
+    serviceName: fake-api
+    servicePort: 80
+  rules:
+  - host: fake-api.test
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: fake-api
+          servicePort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fake-api
+  labels:
+    app: fake-api
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: fake-api
+---

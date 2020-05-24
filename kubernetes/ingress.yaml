@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/rewrite-target: /
+  labels:
+    app: fake-api
+  name: fake-api
+spec:
+  backend:
+    serviceName: fake-api
+    servicePort: 80
+  rules:
+  - host: fake-api.test
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: fake-api
+          servicePort: 80

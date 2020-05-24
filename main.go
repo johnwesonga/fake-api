@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -21,7 +23,8 @@ func main() {
 		httpListenPort = ":8080"
 	}
 
-	log.Println("Starting a fake API")
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.PathPrefix(STATIC_DIR).
@@ -37,11 +40,26 @@ func main() {
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
 
-	log.Fatal(http.ListenAndServe(httpListenPort, loggedRouter))
+	go func() {
+		log.Fatal(http.ListenAndServe(httpListenPort, loggedRouter))
+	}()
+
+	log.Println("Starting a fake API")
+	killSignal := <-interrupt
+	switch killSignal {
+	case os.Interrupt:
+		log.Print("Got SIGINT...")
+	case syscall.SIGTERM:
+		log.Print("Got SIGTERM...")
+	}
+	log.Print("The service is shutting down...")
+	log.Print("Done")
+
 }
 
 func indexHandler(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
+	// fmt.Fprintf(w, "Welcome to the Fake API")
 	http.ServeFile(w, req, "./static/index.html")
 }
 
@@ -57,7 +75,6 @@ func getUserHandler(w http.ResponseWriter, r *http.Request) {
 	name := mux.Vars(r)["name"]
 	user, err := database.GetUser(name)
 	if err != nil {
-		//log.Println("User not found")
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
