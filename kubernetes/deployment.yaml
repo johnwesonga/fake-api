@@ -5,10 +5,10 @@ metadata:
   labels:
     app: fake-api
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-        app: fake-api
+      app: fake-api
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -20,20 +20,16 @@ spec:
         app: fake-api
     spec:
       containers:
-      - name: fake-api
-        image: docker.io/johnwesonga/fake-api:0.0.1
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8080
-        resources:
-          limits:
-            cpu: 10m
-            memory: 30Mi
-          requests:
-            cpu: 10m
-            memory: 30Mi
-      terminationGracePeriodSeconds: 30
+        - name: fake-api
+          image: docker.io/johnwesonga/fake-api:amd64
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
