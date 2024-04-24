@@ -33,5 +33,7 @@ COPY --from=builder /dist/main /
 COPY ./database/data.json /database/data.json
 COPY ./static /static
 
+EXPOSE 9000
+
 # Command to run
 ENTRYPOINT ["/main"]

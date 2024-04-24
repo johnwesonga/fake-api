@@ -20,7 +20,7 @@ const (
 func main() {
 	httpListenPort := os.Getenv("PORT")
 	if httpListenPort == "" {
-		httpListenPort = ":8080"
+		httpListenPort = ":9000"
 	}
 
 	interrupt := make(chan os.Signal, 1)
