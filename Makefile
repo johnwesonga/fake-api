@@ -40,4 +40,4 @@ minikube: push
 			gsed -E "s/\{\{\s*\.ServiceName\s*\}\}/$(APP)/g"; \
 		printf "\n---\n"; \
 	done > tmp.yaml
-	# kubectl apply -f tmp.yaml --validate=false
+	kubectl apply -f tmp.yaml --validate=false
