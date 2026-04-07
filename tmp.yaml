@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: fake-api
-          image: johnwesonga/fake-api:0.0.1
+          image: johnwesonga/fake-api:{{ .Release }}
           imagePullPolicy: Always
           resources:
             limits:
