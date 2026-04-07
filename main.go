@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/gorilla/handlers"
@@ -41,6 +42,9 @@ func main() {
 	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
 
 	go func() {
+		if !strings.HasPrefix(httpListenPort, ":") {
+			httpListenPort = ":" + httpListenPort
+		}
 		log.Fatal(http.ListenAndServe(httpListenPort, loggedRouter))
 	}()
 
