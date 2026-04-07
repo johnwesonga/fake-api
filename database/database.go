@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -28,7 +28,7 @@ func init() {
 		er(err)
 	}
 
-	byteFile, _ := ioutil.ReadAll(file)
+	byteFile, err := io.ReadAll(file)
 	if err != nil {
 		er(err)
 	}

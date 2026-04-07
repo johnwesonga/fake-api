@@ -21,15 +21,15 @@ spec:
     spec:
       containers:
         - name: fake-api
-          image: docker.io/johnwesonga/fake-api:amd64
+          image: johnwesonga/fake-api:{{ .Release }}
           imagePullPolicy: Always
           resources:
             limits:
               cpu: 500m
               memory: 512Mi
           ports:
-            - containerPort: 8080
+            - containerPort: 9000
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 8080
+              port: 9000
