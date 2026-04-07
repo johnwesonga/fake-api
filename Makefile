@@ -36,8 +36,8 @@ push: container
 minikube: push
 	for t in $(shell find ./kubernetes -type f -name "*.yaml"); do \
 		cat $$t | \
-			sed -E "s/\{\{\s*\.Release\s*\}\}/$(RELEASE)/g" | \
-			sed -E "s/\{\{\s*\.ServiceName\s*\}\}/$(APP)/g"; \
+			gsed -E "s/\{\{\s*\.Release\s*\}\}/$(RELEASE)/g" | \
+			gsed -E "s/\{\{\s*\.ServiceName\s*\}\}/$(APP)/g"; \
 		printf "\n---\n"; \
 	done > tmp.yaml
-	kubectl apply -f tmp.yaml --validate=false
+	# kubectl apply -f tmp.yaml --validate=false
