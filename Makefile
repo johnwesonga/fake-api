@@ -2,7 +2,7 @@ PROJECT?=github.com/johnwesonga/fake-api
 APP?=fake-api
 PORT?=9000
 
-RELEASE?=0.0.1
+RELEASE?=$(shell git describe --tags --always --dirty)
 COMMIT?=$(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 BUILD_TIME?=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 CONTAINER_IMAGE?=docker.io/johnwesonga/${APP}
