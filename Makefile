@@ -21,7 +21,7 @@ build: clean
 		-X ${PROJECT}/version.Commit=${COMMIT} -X ${PROJECT}/version.BuildTime=${BUILD_TIME}" \
 		-o ${APP}
 
-container: build
+container: clean
 	docker build -t $(CONTAINER_IMAGE):$(RELEASE) .
 
 run: container
